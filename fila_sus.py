@@ -11,7 +11,7 @@ def dados():
     
     data_hoje = data_de_hoje()
     
-    r = requests.get("https://www.mpdft.mp.br/acompanhamento-sus-df/api/cns/solicitacoes-atuais/?cns=700008748692306&offset=0&next=10")
+    r = requests.get("https://www.mpdft.mp.br/acompanhamento-sus-df/api/cns/solicitacoes-atuais/?cns=700008748699999&offset=0&next=10")
     solicitacoes = r.json()
     # print(solicitacoes)
     
