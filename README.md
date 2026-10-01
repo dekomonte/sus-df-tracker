@@ -5,5 +5,12 @@
 #### Sobre o Projeto
 O `sus-df-tracker` é um script simples de automação que realiza consultas (request) no portal do MPDFT utilizando o número do Cartão Nacional de Saúde (CNS) específico, salva o histórico das posições em arquivo e gera gráficos de evolução temporal.
 
+#### Ferramentas
+Python
+
+#### Desafios e Limitações
+* Ausência de Acesso Oficial à API / Histórico: Por não haver documentação ou chave de acesso oficial de desenvolvedor para a API do MPDFT, a plataforma retorna apenas a posição atual no momento da requisição.
+* Solução Adotada (Persistência em Arquivo): Como a API não fornece o histórico passado da fila, a estratégia do projeto é realizar consultas periódicas e salvar os resultados localmente em um arquivo de texto (historico.txt). Dessa forma, o histórico é construído gradualmente ao longo do tempo para permitir a geração dos gráficos de evolução.
+
 #### Isenção de Responsabilidade (Disclaimer)
 Este projeto foi desenvolvido exclusivamente para fins educacionais e de uso pessoal. Não possui vínculo oficial com o Ministério Público do Distrito Federal e Territórios (MPDFT) nem com a Secretaria de Saúde do DF (SES-DF). Respeite os termos de uso da plataforma original e evite fazer requisições em alta frequência para não sobrecarregar os servidores públicos.
