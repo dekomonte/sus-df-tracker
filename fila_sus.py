@@ -4,14 +4,20 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 def data_de_hoje():
-    
+ 
     return datetime.now()
+
+def adiciona_data(dados):
+    
+    dados['datetime'] = pd.to_datetime(dados['datetime'])
+    dados['data'] = dados['datetime'].dt.date
+    return dados 
 
 def dados():
     
     data_hoje = data_de_hoje()
     
-    r = requests.get("https://www.mpdft.mp.br/acompanhamento-sus-df/api/cns/solicitacoes-atuais/?cns=700008748699999&offset=0&next=10")
+    r = requests.get("https://www.mpdft.mp.br/acompanhamento-sus-df/api/cns/solicitacoes-atuais/?cns=70000874869xxxx&offset=0&next=10")
     solicitacoes = r.json()
     # print(solicitacoes)
     
@@ -22,12 +28,41 @@ def dados():
             historico.write(f"{data_hoje},{procedimento},{posicao}\n")
             
   
+def grafico_geral(): 
+    
+    df = pd.read_csv("historico.txt")
+    df = adiciona_data(df)
+    
+    df = df[df['procedimento'] != 'ENDOSCOPIA DIGESTIVA ALTA']
+    
+    fig, ax = plt.subplots(figsize=(10, 6))
+    
+    for procedimento, grupo in df.groupby('procedimento'):
+        
+        ax.plot(
+            grupo['data'],
+            grupo['posicao'],
+            marker='o',
+            label=procedimento,
+        ) 
+        
+    ax.set_title('Evolução da Posição na Fila do SUS-DF')
+    ax.set_xlabel('Data')
+    ax.set_ylabel('Posição')
+    ax.grid(True)
+    plt.xticks(rotation=45)
+    plt.legend(title='Procedimentos') 
+    plt.tight_layout()
+    plt.show()
+  
 def grafico_individual(df):
     
-    df.plot(title='Posição na Fila - Eletrocardiograma',
+    titulo = df['procedimento'][0]
+    
+    df.plot(title=titulo,
             x='data',
             y='posicao',
-            kind='scatter',
+            kind='line',
             xlabel='Data',
             ylabel='Posição',
             marker='o',
@@ -36,14 +71,12 @@ def grafico_individual(df):
     
     plt.tight_layout()
     plt.show()
+       
     
-    
-def dataframes_individuais():
+def dataframes():
     
     dados = pd.read_csv("historico.txt")
-    dados['datetime'] = pd.to_datetime(dados['datetime'])
-    dados['data'] = dados['datetime'].dt.date
-    
+    dados = adiciona_data(dados)
     # print(dados)
     
     #ELETROCARDIOGRAMA
@@ -63,8 +96,11 @@ def dataframes_individuais():
     # print(df4)
     
     # grafico_individual(df1)
-    
-    grafico_individual(df2)
+    # grafico_individual(df2)
+    # grafico_individual(df3)
+    # grafico_individual(df4)
+
     
 # dados()    
-dataframes_individuais()
+dataframes()
+grafico_geral()
