@@ -20,7 +20,7 @@ O `sus-df-tracker` é um script simples de automação que realiza consultas (`r
 
 ## Funcionalidades que faltam ser implementadas
 - [ ] Limpeza de dados (evitar valores repetidos) 
-- [ ] Gráfico com múltiplos procedimentos
+- [x] Gráfico com múltiplos procedimentos
 
 ---
 
