@@ -12,9 +12,9 @@ O `sus-df-tracker` é um script simples de automação que realiza consultas (`r
 * Requests
 
 ## Desafios e Limitações
-* Ausência de Acesso Oficial à API / Histórico: Por não haver acesso claro à documentação ou acesso oficial de desenvolvedor para a API do MPDFT, a plataforma retorna apenas a posição atual no momento da requisição.
+* Falta de Acesso Oficial à API/Histórico: por não haver acesso oficial à documentação da API do MPDFT, a plataforma retorna apenas a posição atual no momento da requisição.
 
-**Solução Adotada (Persistência em Arquivo)**: Como a API não fornece o histórico passado da fila, a estratégia do projeto é realizar consultas periódicas e salvar os resultados localmente em um arquivo de texto (historico.txt). Dessa forma, o histórico é construído gradualmente ao longo do tempo para permitir a geração dos gráficos de evolução. 
+**Solução Adotada (Persistência em Arquivo)**: a estratégia do projeto é realizar consultas periódicas e salvar os resultados localmente em um arquivo de texto (historico.txt). Dessa forma, o histórico é construído gradualmente ao longo do tempo para permitir a geração dos gráficos de evolução. 
 
 **Solução Alternativa (Persistência em Banco de Dados)**: Mais trabalhosa e exigente em relação à consumo de recursos, mas igualmente interessante. 
 
