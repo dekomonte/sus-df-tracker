@@ -1,3 +1,5 @@
+![Status](https://img.shields.io/badge/Status-Em_Desenvolvimento-yellow)
+
 # sus-df-tracker
 
 **MOTIVAÇÃO:** Na espera de uma cirurgia pelo SUS do Distrito Federal, cansei de entrar no site do [Ministério Público do Distrito Federal e Territórios](https://www.mpdft.mp.br/acompanhamento-sus-df/) para acompanhar minha posição na fila dos procedimentos pré-operatórios. Tendo em vista as visitas repetitivas ao site, pensei em transformar o procedimento em um pequeno projeto de treino para algumas funcionalidades em Python. 
