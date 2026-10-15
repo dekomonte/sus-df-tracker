@@ -1,16 +1,14 @@
 # Versão do Gemini com instruções minhas de estimativa matemática e visualização
 import os
-from datetime import datetime, timedelta
-from pathlib import Path
-
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import requests
 from scipy.optimize import curve_fit
+from datetime import datetime, timedelta
+from pathlib import Path
 
 NOME_ARQUIVO = Path("historico.txt")
-
 
 def data_de_hoje():
     return datetime.now()
