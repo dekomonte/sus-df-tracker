@@ -1,22 +1,19 @@
 # Versão do Gemini com instruções minhas de estimativa matemática e visualização
+# (Caso seja necessário executar em outro ambiente)
 import os
+from datetime import datetime, timedelta
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import requests
-from scipy.optimize import curve_fit
-from datetime import datetime, timedelta
-from pathlib import Path
 
 NOME_ARQUIVO = Path("historico.txt")
 
+
 def data_de_hoje():
     return datetime.now()
-
-
-def modelo_exponencial(t, a, k):
-    """Modelo de decaimento exponencial: y(t) = a * exp(-k * t)"""
-    return a * np.exp(-k * t)
 
 
 def dados():
@@ -34,12 +31,13 @@ def dados():
         print(f"Erro ao consultar a API: {err}")
         return
 
+    # Gravação otimizada para evitar duplicadas seguidas idênticas
     with open(NOME_ARQUIVO, "a", encoding="utf-8") as f:
         for solicitacao in solicitacoes:
             procedimento = solicitacao.get("procedimento", "").strip()
             posicao = solicitacao.get("posicao")
             if procedimento and posicao is not None:
-                f.write(f"{data_hoje.isoformat()}, {procedimento}, {posicao}\n")
+                f.write(f"{data_hoje.strftime('%Y-%m-%d %H:%M:%S')}, {procedimento}, {posicao}\n")
 
 
 def graficos():
@@ -49,7 +47,7 @@ def graficos():
 
     data_hoje_str = datetime.now().strftime("%d/%m/%Y")
 
-    # Leitura do histórico
+    # Leitura robusta do histórico
     df = pd.read_csv(
         NOME_ARQUIVO,
         header=None,
@@ -59,14 +57,14 @@ def graficos():
         on_bad_lines="skip",
     )
 
-    # Limpeza básica
+    # Limpeza e conversões
     df["procedimento"] = df["procedimento"].str.strip()
     df["posicao"] = pd.to_numeric(df["posicao"], errors="coerce")
     df = df.dropna(subset=["posicao"])
 
-    # Filtro de exclusão
-    padrao_exclusao = r"ENDOSCOPIA|PSIQUIATR"
-    df = df[~df["procedimento"].str.contains(padrao_exclusao, case=False, na=False)]
+    # Exclusão de procedimentos indesejados
+    procedimentos_ignorados = ["ENDOSCOPIA DIGESTIVA ALTA"]
+    df = df[~df["procedimento"].isin(procedimentos_ignorados)]
 
     # Tratamento de datas
     df["data_dt"] = pd.to_datetime(df["data_hora"].str.strip(), errors="coerce")
@@ -83,7 +81,7 @@ def graficos():
     plt.figure(figsize=(12, 6))
 
     for idx, (procedimento, grupo) in enumerate(df.groupby("procedimento")):
-        # Consolida histórico por dia
+        # Consolida registros por dia considerando o último valor gravado no dia
         grupo_dia = (
             grupo.groupby("data_formatada", as_index=False)
             .agg({"posicao": "last", "data_dt": "last"})
@@ -92,55 +90,31 @@ def graficos():
 
         label_legenda = procedimento
 
-        # ---------------------------------------------------------------------
-        # ESTIMATIVA EXPONENCIAL DE ATENDIMENTO DA FILA
-        # ---------------------------------------------------------------------
-        if len(grupo_dia) >= 3:
+        # Regressão linear
+        if len(grupo_dia) >= 2:
             dias_decorridos = np.array(
                 [(d - data_minima).total_seconds() / 86400.0 for d in grupo_dia["data_dt"]]
             )
             posicoes = grupo_dia["posicao"].values
 
-            try:
-                # Estimativas iniciais para otimização [a, k]
-                p0 = [posicoes[0], 0.01]
-                popt, _ = curve_fit(
-                    modelo_exponencial,
-                    dias_decorridos,
-                    posicoes,
-                    p0=p0,
-                    bounds=(0, [np.inf, np.inf]),
-                    maxfev=5000,
-                )
-                a_opt, k_opt = popt
+            slope, intercept = np.polyfit(dias_decorridos, posicoes, 1)
 
-                # Cálculo de R² para medir a qualidade do ajuste
-                residuos = posicoes - modelo_exponencial(dias_decorridos, *popt)
-                ss_res = np.sum(residuos**2)
-                ss_tot = np.sum((posicoes - np.mean(posicoes)) ** 2)
-                r_squared = 1 - (ss_res / (ss_tot + 1e-8))
-
-                if k_opt > 1e-6:  # Fila reduzindo
-                    # Calcula o dia t onde a posição atinge <= 1
-                    t_alvo = np.log(a_opt) / k_opt
-                    data_estimada = data_minima + timedelta(days=float(t_alvo))
-
-                    if 0 <= t_alvo <= 3650:
-                        qualidade = "" if r_squared >= 0.5 else " (Baixa Precisão)"
-                        label_legenda += f"\n  └ Exp: {data_estimada.strftime('%d/%m/%Y')}{qualidade}"
-                    else:
-                        label_legenda += "\n  └ Exp: > 10 anos"
+            if slope < 0:
+                dia_alvo = (1 - intercept) / slope
+                if 0 <= dia_alvo <= 3650:
+                    try:
+                        data_estimada = data_minima + timedelta(days=float(dia_alvo))
+                        label_legenda += f"\n  └ Previsão: {data_estimada.strftime('%d/%m/%Y')}"
+                    except OverflowError:
+                        label_legenda += "\n  └ Previsão: > 10 anos"
                 else:
-                    label_legenda += "\n  └ Exp: Fila Estagnada/Crescendo"
-
-            except Exception:
-                label_legenda += "\n  └ Exp: Erro no Ajuste"
+                    label_legenda += "\n  └ Previsão: > 10 anos"
+            else:
+                label_legenda += "\n  └ Previsão: Fila Estagnada"
         else:
-            label_legenda += "\n  └ Exp: Dados Insuficientes (mín. 3)"
+            label_legenda += "\n  └ Previsão: Dados insuficientes"
 
-        # ---------------------------------------------------------------------
-
-        # Plot da linha real
+        # Plot da linha do procedimento
         linha = plt.plot(
             grupo_dia["data_formatada"],
             grupo_dia["posicao"],
@@ -150,7 +124,7 @@ def graficos():
         )
         cor_linha = linha[0].get_color()
 
-        # Rótulo no último ponto
+        # Exibe o rótulo numérico apenas no ÚLTIMO PONTO (mais atualizado)
         ultimo_ponto = grupo_dia.iloc[-1]
         offset_y = 12 if idx % 2 == 0 else -18
 
@@ -166,8 +140,9 @@ def graficos():
             bbox=dict(boxstyle="round,pad=0.2", fc="white", ec=cor_linha, lw=1, alpha=0.8),
         )
 
+    # Configurações do layout
     plt.title(
-        f"Evolução e Previsão Exponencial da Fila — Gerado em {data_hoje_str}",
+        f"Evolução e Previsão da Posição na Fila de Espera — Atualizado em {data_hoje_str}",
         fontsize=13,
         pad=15,
         weight="bold",
@@ -181,7 +156,7 @@ def graficos():
 
     plt.grid(True, linestyle="--", alpha=0.5)
     plt.legend(
-        title="Procedimentos & Previsões Exponenciais",
+        title="Procedimentos & Estimativas",
         bbox_to_anchor=(1.02, 1),
         loc="upper left",
         fontsize=9,
