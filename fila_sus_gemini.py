@@ -17,27 +17,18 @@ def data_de_hoje():
 
 
 def dados():
+    
     data_hoje = data_de_hoje()
-    url = (
-        "https://www.mpdft.mp.br/acompanhamento-sus-df/api/cns/"
-        "solicitacoes-atuais/?cns=700008748692306&offset=0&next=10"
-    )
-
-    try:
-        response = requests.get(url, timeout=15)
-        response.raise_for_status()
-        solicitacoes = response.json()
-    except requests.RequestException as err:
-        print(f"Erro ao consultar a API: {err}")
-        return
-
-    # Gravação otimizada para evitar duplicadas seguidas idênticas
-    with open(NOME_ARQUIVO, "a", encoding="utf-8") as f:
+    
+    r = requests.get("https://www.mpdft.mp.br/acompanhamento-sus-df/api/cns/solicitacoes-atuais/?cns=700008748692306&offset=0&next=10")
+    solicitacoes = r.json()
+    # print(solicitacoes)
+    
+    with open("historico.txt", "a",encoding="utf-8") as historico:
         for solicitacao in solicitacoes:
-            procedimento = solicitacao.get("procedimento", "").strip()
+            procedimento = solicitacao.get("procedimento")
             posicao = solicitacao.get("posicao")
-            if procedimento and posicao is not None:
-                f.write(f"{data_hoje.strftime('%Y-%m-%d %H:%M:%S')}, {procedimento}, {posicao}\n")
+            historico.write(f"{data_hoje},{procedimento},{posicao}\n")
 
 
 def graficos():
@@ -168,5 +159,5 @@ def graficos():
 
 
 if __name__ == "__main__":
-    dados()
+    # dados()
     graficos()
