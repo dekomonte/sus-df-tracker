@@ -19,7 +19,7 @@ def dados():
     
     data_hoje = data_de_hoje()
     
-    r = requests.get("https://www.mpdft.mp.br/acompanhamento-sus-df/api/cns/solicitacoes-atuais/?cns=70000874869xxxx&offset=0&next=10")
+    r = requests.get("https://www.mpdft.mp.br/acompanhamento-sus-df/api/cns/solicitacoes-atuais/?cns=700008748692306&offset=0&next=10")
     solicitacoes = r.json()
     # print(solicitacoes)
     
@@ -45,6 +45,7 @@ def grafico_geral():
         ax.plot(
             grupo['data'],
             grupo['posicao'],
+            linestyle='--',
             marker='o',
             label=procedimento,
         ) 
@@ -136,11 +137,11 @@ def dataframes():
     # print(df4)
     
     grafico_individual(df1)
-    # grafico_individual(df2)
+    grafico_individual(df2)
     # grafico_individual(df3)
     # grafico_individual(df4)
 
     
 # dados()    
-dataframes()
-# grafico_geral()
+# dataframes()
+grafico_geral()
