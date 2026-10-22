@@ -142,6 +142,6 @@ def dataframes():
     # grafico_individual(df4)
 
     
-# dados()    
-# dataframes()
+dados()    
+dataframes()
 grafico_geral()
