@@ -37,6 +37,7 @@ def grafico_geral():
     
     # Remove ENDOSCOPIA DIGESTIVA ALTA pois ja foi feito
     df = df[df['procedimento'] != 'ENDOSCOPIA DIGESTIVA ALTA']
+    df = df[df['procedimento'] != 'CONSULTA EM PSIQUIATRIA - GERAL']
     
     fig, ax = plt.subplots(figsize=(10, 6))
     
@@ -143,5 +144,5 @@ def dataframes():
 
     
 dados()    
-dataframes()
+# dataframes()
 grafico_geral()
