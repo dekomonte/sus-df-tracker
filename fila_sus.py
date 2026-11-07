@@ -38,6 +38,8 @@ def grafico_geral():
     # Remove ENDOSCOPIA DIGESTIVA ALTA pois ja foi feito
     df = df[df['procedimento'] != 'ENDOSCOPIA DIGESTIVA ALTA']
     df = df[df['procedimento'] != 'CONSULTA EM PSIQUIATRIA - GERAL']
+
+    df = df.dropna(subset=['data', 'posicao'])
     
     fig, ax = plt.subplots(figsize=(10, 6))
     
@@ -50,6 +52,9 @@ def grafico_geral():
             marker='o',
             label=procedimento,
         ) 
+
+        # Valor da última posição
+        ax.text(grupo['data'].iloc[-1], grupo['posicao'].iloc[-1], f" {int(grupo['posicao'].iloc[-1])}", va='bottom')
         
     ax.set_title('Evolução da Posição na Fila do SUS-DF')
     ax.set_xlabel('Data')
