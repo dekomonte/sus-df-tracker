@@ -1,6 +1,5 @@
 # Versão do Gemini com instruções minhas de estimativa matemática e visualização
 # (Caso seja necessário executar em outro ambiente)
-import os
 from datetime import datetime, timedelta
 from pathlib import Path
 
