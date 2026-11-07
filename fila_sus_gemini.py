@@ -31,6 +31,7 @@ def dados():
 
 
 def graficos():
+
     if not NOME_ARQUIVO.exists():
         print(f"Arquivo '{NOME_ARQUIVO}' não encontrado.")
         return
@@ -53,6 +54,7 @@ def graficos():
     df = df.dropna(subset=["posicao"])
 
     # Exclusão de procedimentos indesejados
+    # procedimentos_ignorados = ["ENDOSCOPIA DIGESTIVA ALTA", "CONSULTA EM PSIQUIATRIA - GERAL"]
     procedimentos_ignorados = ["ENDOSCOPIA DIGESTIVA ALTA"]
     df = df[~df["procedimento"].isin(procedimentos_ignorados)]
 
@@ -94,7 +96,7 @@ def graficos():
                 if 0 <= dia_alvo <= 3650:
                     try:
                         data_estimada = data_minima + timedelta(days=float(dia_alvo))
-                        label_legenda += f"\n  └ Previsão: {data_estimada.strftime('%d/%m/%Y')}"
+                        label_legenda += f"\n  └ Previsão: {data_estimada.strftime('%d/%m/%Y')} (Regressão linear)"
                     except OverflowError:
                         label_legenda += "\n  └ Previsão: > 10 anos"
                 else:
@@ -132,7 +134,7 @@ def graficos():
 
     # Configurações do layout
     plt.title(
-        f"Evolução e Previsão da Posição na Fila de Espera — Atualizado em {data_hoje_str}",
+        f"Evolução e Previsão da Posição na Fila de Espera SUS DF — Atualizado em {data_hoje_str}",
         fontsize=13,
         pad=15,
         weight="bold",
@@ -146,7 +148,7 @@ def graficos():
 
     plt.grid(True, linestyle="--", alpha=0.5)
     plt.legend(
-        title="Procedimentos & Estimativas",
+        # title="Procedimentos & Estimativas",
         bbox_to_anchor=(1.02, 1),
         loc="upper left",
         fontsize=9,
@@ -158,5 +160,5 @@ def graficos():
 
 
 if __name__ == "__main__":
-    # dados()
+    dados()
     graficos()

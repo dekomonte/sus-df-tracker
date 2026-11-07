@@ -5,6 +5,8 @@
 
 **MOTIVAÇÃO:** Na espera de uma cirurgia pelo SUS do Distrito Federal, cansei de entrar no site do [Ministério Público do Distrito Federal e Territórios](https://www.mpdft.mp.br/acompanhamento-sus-df/) para acompanhar minha posição na fila dos procedimentos pré-operatórios. Tendo em vista as visitas repetitivas ao site, pensei em transformar o procedimento em um pequeno projeto de treino para algumas funcionalidades em Python. 
 
+![Exemplo Gemini](/fila_sus_gemini.png)
+
 ## :bulb: Sobre 
 O `sus-df-tracker` é um script simples de automação que realiza consultas via `requests` no portal do MPDFT utilizando o número do Cartão Nacional de Saúde (CNS) específico direto na aplicação, salva o histórico das posições em arquivo e gera gráficos de evolução temporal.
 
@@ -28,6 +30,10 @@ pip install -r requirements.txt
 Execute o script: <br>
 ```bash
 python fila_sus.py
+```
+Ou execute o script do Google Gemini (mais polido): <br>
+```bash
+python fila_sus_gemini.py
 ```
 
 ## :wrench: :hammer: Tecnologias e Ferramentas
