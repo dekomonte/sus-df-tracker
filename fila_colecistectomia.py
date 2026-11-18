@@ -1,43 +1,26 @@
-from datetime import datetime
-import requests
-import pandas as pd
+from datetime import datetime, timedelta
+from pathlib import Path
+
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+import numpy as np
+import pandas as pd
+import requests
+from auxiliares import dados, data_de_hoje, adiciona_data
 
-def data_de_hoje():
- 
-    return datetime.now()
-
-#Adiciona coluna com apenas a data 
-def adiciona_data(dados): 
-    
-    dados['datetime'] = pd.to_datetime(dados['datetime'])
-    dados['data'] = dados['datetime'].dt.date
-    return dados 
-
-#Faz a requisicao no site do ministerio publico e salva os valores em um arquivo (historico.txt)
-def dados():
-    
-    data_hoje = data_de_hoje()
-    
-    r = requests.get("https://www.mpdft.mp.br/acompanhamento-sus-df/api/cns/solicitacoes-atuais/?cns=700008748692306&offset=0&next=10")
-    solicitacoes = r.json()
-    # print(solicitacoes)
-    
-    with open("historico.txt", "a",encoding="utf-8") as historico:
-        for solicitacao in solicitacoes:
-            procedimento = solicitacao.get("procedimento")
-            posicao = solicitacao.get("posicao")
-            historico.write(f"{data_hoje},{procedimento},{posicao}\n")
+NOME_ARQUIVO = Path("historico.txt")
 
 def grafico_individual(df):
     
     titulo = df['procedimento'].iloc[0]
+
+    data_formatada = data_de_hoje().strftime("%d/%m/%Y")
     
-    ax = df.plot(title=titulo,
+    ax = df.plot(title=f'{titulo} {data_formatada}',
             x='data',
             y='posicao',
             linestyle='--',
-            color='blue',
+            color='darkblue',
             kind='line',
             xlabel='Data',
             ylabel='Posição',
@@ -73,8 +56,8 @@ def grafico_individual(df):
             xytext=xytext,
             ha="center",
             va=va,
-            fontsize=9,
-            color='blue'
+            fontsize=10,
+            color='darkblue'
         )
 
         contador_rotulos += 1

@@ -1,18 +1,14 @@
-from datetime import datetime
-import requests
-import pandas as pd
+from datetime import datetime, timedelta
+from pathlib import Path
+
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+import numpy as np
+import pandas as pd
+import requests
+from auxiliares import dados, data_de_hoje, adiciona_data
 
-def data_de_hoje():
- 
-    return datetime.now()
-
-#Adiciona coluna com apenas a data 
-def adiciona_data(dados): 
-    
-    dados['datetime'] = pd.to_datetime(dados['datetime'])
-    dados['data'] = dados['datetime'].dt.date
-    return dados 
+NOME_ARQUIVO = Path("historico.txt")
 
 #Faz a requisicao no site do ministerio publico e salva os valores em um arquivo (historico.txt)
 def dados():
@@ -38,6 +34,8 @@ def grafico_geral():
     # Remove ENDOSCOPIA DIGESTIVA ALTA pois ja foi feito
     df = df[df['procedimento'] != 'ENDOSCOPIA DIGESTIVA ALTA']
     df = df[df['procedimento'] != 'CONSULTA EM PSIQUIATRIA - GERAL']
+    df = df[df['procedimento'] != 'CE - COLECISTECTOMIA ']
+    df = df[df['procedimento'] != 'CE - COLECISTECTOMIA']
 
     df = df.dropna(subset=['data', 'posicao'])
     

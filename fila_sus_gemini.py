@@ -8,30 +8,9 @@ import matplotlib.dates as mdates
 import numpy as np
 import pandas as pd
 import requests
+from auxiliares import dados, data_de_hoje, adiciona_data
 
 NOME_ARQUIVO = Path("historico.txt")
-
-
-def dados():
-    try:
-        r = requests.get(
-            "https://www.mpdft.mp.br/acompanhamento-sus-df/api/cns/solicitacoes-atuais/?cns=700008748692306&offset=0&next=10",
-            timeout=10,
-        )
-        solicitacoes = r.json()
-    except Exception as e:
-        print(f"Erro ao buscar dados da API: {e}")
-        return
-    
-    data_hoje = datetime.now()
-    
-    with open(NOME_ARQUIVO, "a", encoding="utf-8") as historico:
-        for s in solicitacoes:
-            procedimento = s.get("procedimento")
-            posicao = s.get("posicao")
-            if procedimento and posicao is not None:
-                historico.write(f"{data_hoje},{procedimento.strip()},{posicao}\n")
-
 
 def graficos():
     
