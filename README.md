@@ -45,6 +45,7 @@ python fila_sus_gemini.py
   - `pandas` — Manipulação e estruturação do histórico.
   - `matplotlib` — Geração dos gráficos de evolução temporal.
 - **Apoio de IA:** Google Gemini & Microsoft Copilot (auxílio na construção e otimização do código).
+- **Automação:** GitHub Actions (execução diária e commit automático do histórico).
 
 ## Desafios e Limitações
 * Falta de Acesso Oficial à API: por não haver acesso oficial à documentação da API do MPDFT, a plataforma retorna apenas a posição atual no momento da requisição. Problema: execução do código manualmente. 
@@ -58,7 +59,7 @@ python fila_sus_gemini.py
 ## Melhorias Futuras
 - [ ] Limpeza de dados (evitar valores repetidos) 
 - [x] Gráfico com múltiplos procedimentos
-- [ ] Automação de execução periódica (GitHub Actions ou Agendador de Tarefas)
+- [x] Automação de execução periódica (GitHub Actions ou Agendador de Tarefas)
 - [ ] Log com erros
 
 ---
