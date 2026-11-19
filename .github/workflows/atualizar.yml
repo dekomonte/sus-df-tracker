@@ -2,7 +2,7 @@ name: Atualizar Historico SUS
 
 on:
   schedule:
-    - cron: '0 12 * * *' # Roda todos os dias às 12:00 (UTC).
+    - cron: '17 12 * * *' 
   workflow_dispatch: 
 
 jobs:
