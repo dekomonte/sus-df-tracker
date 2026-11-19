@@ -29,8 +29,8 @@ jobs:
       
       - name: Salvar (Comitar) o histórico atualizado
         run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git config user.name github-actions
+          git config user.email github-actions@github.com
           git add historico.txt
-          git commit -m "Atualizando histórico: $(date)" || echo "Nenhuma mudança para comitar"
+          git commit -m "Atualizando histórico: $(date)"
           git push
