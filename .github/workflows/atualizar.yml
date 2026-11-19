@@ -1,15 +1,16 @@
+
 name: Atualizar Historico SUS
 
 on:
   schedule:
-    - cron: '*/5 * * * *' 
-  workflow_dispatch: 
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
 
 jobs:
   run-script:
     runs-on: ubuntu-latest
     permissions:
-      contents: write 
+      contents: write
 
     steps:
       - name: Baixar o código do repositório
@@ -18,10 +19,13 @@ jobs:
       - name: Configurar o Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11' 
+          python-version: '3.11'
 
       - name: Instalar o Requests
         run: pip install requests
+
+      - name: Instalar o Datetime
+        run: pip install datetime
 
       - name: Executar o script
         run: python dados.py
