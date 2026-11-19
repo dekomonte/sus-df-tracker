@@ -68,6 +68,7 @@ Mais trabalhosa e exigente em relação à consumo de recursos, mas igualmente i
 ## Melhorias Futuras
 
 - [ ] Limpeza de dados (evitar valores repetidos)
+- [ ] Limpeza de código (evitar redundâncias)
 - [x] Gráfico com múltiplos procedimentos
 - [x] Automação de execução periódica (GitHub Actions ou Agendador de Tarefas)
 - [ ] Log com erros
