@@ -52,7 +52,7 @@ python fila_sus_gemini.py
   - `requests` — Requisições HTTP para consulta dos dados.
   - `pandas` — Manipulação e estruturação do histórico.
   - `matplotlib` — Geração dos gráficos de evolução temporal.
-- **Apoio de IA:** Google Gemini & Microsoft Copilot (auxílio na construção e otimização do código).
+- **Apoio de IA:** Google Gemini (auxílio na construção e otimização do código).
 - **Automação:** GitHub Actions (execução diária e commit automático do histórico).
 
 ## Desafios e Limitações
