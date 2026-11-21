@@ -11,11 +11,17 @@ from auxiliares import dados, data_de_hoje, adiciona_data
 NOME_ARQUIVO = Path("historico.txt")
 
 def grafico_individual(df):
-    
+
     titulo = df['procedimento'].iloc[0]
 
+    # Garante que as datas sejam interpretadas corretamente
+    df = df.copy()
+    df["data"] = pd.to_datetime(df["data"], errors="coerce")
+    df = df.dropna(subset=["data"])
+    df = df.sort_values("data")
+
     data_formatada = data_de_hoje().strftime("%d/%m/%Y")
-    
+
     ax = df.plot(title=f'{titulo} {data_formatada}',
             x='data',
             y='posicao',
@@ -27,8 +33,11 @@ def grafico_individual(df):
             marker='o',
             rot=45,
             grid=True)
-    
-   
+
+    # Configura o eixo X para exibir as datas corretamente
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%d/%m/%Y'))
+    ax.xaxis.set_major_locator(mdates.AutoDateLocator())
+
     # GEMINI - Adicionar rótulos nos pontos de mudança de valor
     # Adicionar os rótulos intercalados (cima / baixo) 
     valores_exibidos = set()
@@ -61,26 +70,35 @@ def grafico_individual(df):
         )
 
         contador_rotulos += 1
-    
+
     plt.tight_layout()
     plt.show()
 
 # Cria dataframes individuais para cada procedimento
 def dataframes():
-    
+
     dados = pd.read_csv("historico.txt")
-    
+
     # Corrige o problema do decimal convertendo a posição para numérico e depois para inteiro
     dados["posicao"] = pd.to_numeric(dados["posicao"], errors="coerce")
     dados = dados.dropna(subset=["posicao"])
     dados["posicao"] = dados["posicao"].astype(int)
-    
+
     dados = adiciona_data(dados)
-    
+
+    # Converte a coluna de datas
+    dados["data"] = pd.to_datetime(dados["data"], errors="coerce")
+
+    # Remove datas inválidas
+    dados = dados.dropna(subset=["data"])
+
     # Exemplo para a Colecistectomia
     dados["procedimento"] = dados["procedimento"].astype(str).str.strip()
-    df = dados[dados["procedimento"] == "CE - COLECISTECTOMIA"]
-    
+
+    df = dados.loc[
+        dados["procedimento"] == "CE - COLECISTECTOMIA"
+    ].copy()
+
     grafico_individual(df)
 
 dados()    

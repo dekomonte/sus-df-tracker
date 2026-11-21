@@ -3,7 +3,7 @@ import requests
 from datetime import datetime
 
 def data_de_hoje():
-    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    return datetime.now()
 
 def dados():
     data_hoje = data_de_hoje()
