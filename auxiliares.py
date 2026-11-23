@@ -1,19 +1,23 @@
 from datetime import datetime, timedelta
 from pathlib import Path
+from dotenv import load_dotenv
 
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import numpy as np
 import pandas as pd
 import requests
+import os
 
+load_dotenv(override=True)
+cns = os.getenv("CNS")
 
 NOME_ARQUIVO = Path("historico.txt")
 
 def dados():
     try:
         r = requests.get(
-            "https://www.mpdft.mp.br/acompanhamento-sus-df/api/cns/solicitacoes-atuais/?cns=700008748692306&offset=0&next=10",
+            f"https://www.mpdft.mp.br/acompanhamento-sus-df/api/cns/solicitacoes-atuais/?cns={cns}&offset=0&next=10",
             timeout=10,
         )
         solicitacoes = r.json()
